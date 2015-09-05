@@ -1,169 +1,106 @@
 <html>
-<head>
-	<title>Signa</title>
-
-	<script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/script.js"></script>
-	<script src="https://maps.googleapis.com/maps/api/js"></script>
-	<script src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
-
-
-	<link rel="stylesheet" type="text/css" href="css/boostrap.css">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
-<body style="overflow-y: none; max-height: 100%;">
-
-	
-	<div id="map">
-
-	</div>
-
-	<canvas width="100%" height="100%" id="mapOverlay">
-
-	</canvas>
-
-	<div id="statsBoard" class="col-md-2">
-		<br> 
-		<div class="panel panel-default">
-		  <div class="panel-heading"><h5>Game Name</h5><a class="label label-success" style="font-size: 120%;"> Live </a></div> 
-
-		  <div class="panel-body">
-		    00/00/0000 - 00:00:00
-		  </div>
-		</div>
-
-		<div class="panel panel-default">
-		  <div class="panel-body">
-		    Game Made By: anant
-		  </div>
-		</div>
-
-		<div class="panel panel-default">
-		  <div class="panel-body">
-		    North West: <br>(-49.523, -49.23)
-		  </div>
-		  <div class="panel-body">
-		    South East: <br>(-59.423, -39.23) 
-		  </div>
-		  <div class="panel-body">
-		    Center: <br>(-23.431, -53.231) 
-		  </div>
-		  <div class="panel-body">
-		    Radius: <br>.23 miles
-		  </div>
-		</div>
- 	<a class="list-group-item active">
-		    Messages
-		  </a>
-		<div class="list-group" style="overflow-y: scroll; height: 20%;">
-		 
-		  <a href="#" class="list-group-item"><strong>Kamesh</strong> <p class="text-primary">I see you beta</p>
-		  </a>
-		  <a href="#" class="list-group-item"><strong>Aakash</strong> <p class="text-primary">Who?</p>
-		  </a>
-		  <a href="#" class="list-group-item"><strong>Anant</strong> <p class="text-primary">Kamesh beta.... I see youuuuu!</p>
-		  </a>
-		  <a href="#" class="list-group-item"><strong>Kamesh</strong> <p class="text-primary">Anant betaaaaa, I see youuuu!</p>
-		  </a>
-		  <a href="#" class="list-group-item"><strong>Anant</strong> <p class="text-primary">;)</p>
-		  </a>
-		  <a href="#" class="list-group-item"><strong>Aakash</strong><p class="text-primary">lol...</p>
-		  </a>
-		</div>
-		
-
-	
-	</div>
-
-
-	<div id="gameFindDiv" class="col-md-4 col-md-offset-4" style="text-align: center;">
-		<h1> Signa </h1>
-		<div class="form-group">
-		  <input class="form-control input-lg" type="text" id="gameIdHolder" placeholder="Game Id (ex. theBestGame)">
-		</div>
-		<a id="findGame" class="btn btn-primary btn-lg">Find Game</a>
-	</div>
-
-
-	<div id="playersBoard" class="col-md-2 col-md-offset-10" style="height: 100%;">
-
-		<div class="panel panel-default" style="text-align: center;">
-			  <div class="panel-heading">Players</div>
-			  <div class="panel-body">
-			    <a href="#" class="btn btn-warning">Seekers</a> 
-			<a href="#" class="btn btn-info">Hiders</a>
-			<a href="#" class="btn btn-danger">Calories</a>
-			<a href="#" class="btn btn-success">Distance</a>
-		  </div>
-		</div>
-		
-
-		<div style="overflow-y: scroll; height: 80%;">
-			<div class="panel panel-default">	  
-				<div class="panel-body">
-
-					<div class="list-group" style="text-align: center;">
-						<a class="list-group-item active">
-							Aakash Adesara <br><span class="label label-warning"> Seeker </span> 
-						</a>
-						<a class="list-group-item"> <span class="badge">-89.293</span> <span class="badge">34.312</span> <br>
-						</a>
-						<a href="#" class="list-group-item"> <span class="label label-success"> 48 miles </span> <span class="label label-danger"> 420 calories </span>
-						</a>
-					</div>
-				</div>
-			</div>
-
-			<div class="panel panel-default">	  
-				<div class="panel-body">
-
-					<div class="list-group" style="text-align: center;">
-						<a class="list-group-item active">
-							Anant Jain <br><span class="label label-info"> Hider </span> 
-						</a>
-						<a class="list-group-item"> <span class="badge">-89.293</span> <span class="badge">34.312</span> <br>
-						</a>
-						<a href="#" class="list-group-item"> <span class="label label-success"> 48 miles </span> <span class="label label-danger"> 420 calories </span>
-						</a>
-					</div>
-				</div>
-			</div>
-
-			<div class="panel panel-default">	  
-				<div class="panel-body">
-
-					<div class="list-group" style="text-align: center;">
-						<a class="list-group-item active">
-							Kamesh Vedula <br><span class="label label-info"> Hider </span> 
-						</a>
-						<a class="list-group-item"> <span class="badge">-89.293</span> <span class="badge">34.312</span> <br>
-						</a>
-						<a href="#" class="list-group-item"> <span class="label label-success"> 48 miles </span> <span class="label label-danger"> 420 calories </span>
-						</a>
-					</div>
-				</div>
-			</div>
-
-			<div class="panel panel-default">	  
-				<div class="panel-body">
-
-					<div class="list-group" style="text-align: center;">
-						<a class="list-group-item active">
-							Kamesh Vedula <br><span class="label label-info"> Hider </span> 
-						</a>
-						<a class="list-group-item"> <span class="badge">-89.293</span> <span class="badge">34.312</span> <br>
-						</a>
-						<a href="#" class="list-group-item"> <span class="label label-success"> 48 miles </span> <span class="label label-danger"> 420 calories </span>
-						</a>
-					</div>
-				</div>
-			</div>
-
-			
-		</div>
-
-	</div>
-
-	
-</body>
+    <head>
+        <title>Signa</title>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/script.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js"></script>
+        <script src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/boostrap.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    </head>
+    <body style="overflow-y: none; max-height: 100%;">
+        <div id="map">
+        </div>
+        <canvas width="100%" height="100%" id="mapOverlay">
+        </canvas>
+        <div id="statsBoard" class="col-md-2">
+            <br> 
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h5 id="holder_title">Game Name</h5>
+                    <a class="label label-success" style="font-size: 120%;"> Live </a> <a id="beginMap" class="btn btn-primary">Begin Map</a>
+                </div>
+                <div class="panel-body" id="holder_creationDate"> 
+                    00/00/0000 - 00:00:00
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    Game Made By: <strong id="holder_ownerName"> anant </strong>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body" >
+                    <strong id="holder_northEastPoint">North West: (, )</strong>
+                </div>
+                <div class="panel-body">
+                    <strong id="holder_southWestPoint">South East: (, ) </strong>
+                </div>
+                <div class="panel-body">
+                    <strong id="holder_centerPoint">Center: <br>(, ) </strong>
+                </div>
+                <div class="panel-body">
+                    <strong id="holder_radius"> Radius: 0 miles</strong>
+                </div>
+            </div>
+            <a class="list-group-item active">
+            Messages
+            </a>
+            <div class="list-group" style="overflow-y: scroll; height: 20%;">
+                <a href="#" class="list-group-item">
+                    <p class="text-primary"><strong style="color: white;">Kamesh</strong>  I see you beta</p>
+                </a>
+                <a href="#" class="list-group-item">
+                    <p class="text-primary"><strong style="color: white;">Aakash</strong> Who?</p>
+                </a>
+                <a href="#" class="list-group-item">
+                    <p class="text-primary"><strong style="color: white;">Anant</strong> Kamesh beta.... I see youuuuu!</p>
+                </a>
+                <a href="#" class="list-group-item">
+                    <p class="text-primary"><strong style="color: white;">Kamesh</strong> Anant betaaaaa, I see youuuu!</p>
+                </a>
+                <a href="#" class="list-group-item">
+                    <p class="text-primary"><strong style="color: white;">Anant</strong> ;)</p>
+                </a>
+                <a href="#" class="list-group-item">
+                    <p class="text-primary"><strong style="color: white;">Aakash</strong> lol...</p>
+                </a>
+            </div>
+        </div>
+        <div id="gameFindDiv" class="col-md-4 col-md-offset-4" style="text-align: center;">
+            <h1> Signa </h1>
+            <div class="form-group">
+                <input class="form-control input-lg" type="text" id="gameIdHolder" placeholder="Game Id (ex. theBestGame)">
+            </div>
+            <a id="findGame" class="btn btn-primary btn-lg">Find Game</a>
+        </div>
+        <div id="playersBoard" class="col-md-2 col-md-offset-10" style="height: 100%;">
+            <div class="panel panel-default" style="text-align: center;">
+                <div class="panel-heading">Players</div>
+                <div class="panel-body">
+                    <a href="#" class="btn btn-warning">Seekers</a> 
+                    <a href="#" class="btn btn-info">Hiders</a>
+                    <a href="#" class="btn btn-danger">Calories</a>
+                    <a href="#" class="btn btn-success">Distance</a>
+                </div>
+            </div>
+            <div>
+                <div style="overflow-y: scroll; height: 80%; background-color: rgba(0,0,0,0.5);" >
+                    <div class="panel panel-default" id="playerHolder">
+                        <div class="panel-body">
+                            <div class="list-group" style="text-align: center;">
+                                <a class="list-group-item active"  style="background-color: white; color: black;">
+                                Aakash Adesara <br><span class="label label-warning" id="holder_color"> Seeker</span>  <br>
+                                </a>
+                                <a class="list-group-item"> <span class="badge">-89.293</span> <span class="badge">34.312</span> <br>
+                                </a>
+                                <a href="#" class="list-group-item"> <span class="label label-success"> 48 miles </span> <span class="label label-danger"> 420 calories </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

@@ -1,18 +1,29 @@
 var map;
-var zoomLev = 1;
+var zoomLev = 4;
+
+
 
 $(document).ready(function(){
 	Parse.initialize("anMXyXSJx6d4Gq2AX5EZHCUt1XXLMv2GK9RIpNnL", "fIWlKdHonuiNySvHXsesopC1m3lVkPPaZCuw4xus");
 
 
 	initMap(35.901258, -79.172182, 43.901258, -71.172182, 2000);
+	zoomLev = 1;
 	$("#statsBoard").hide();
 	$("#playersBoard").hide();
 
 	$("#findGame").click(function(){
+		$("#beginMap").click(function(){
+			loadUsers($("#gameIdHolder").val());
+			plotPoints($("#gameIdHolder").val());
+			
+		});
+
 		 $("#gameFindDiv").hide();
+
 		findMap();
 	});
+
 
 	
 });
@@ -24,31 +35,43 @@ function findMap(){
 	query.equalTo("gameKey", $("#gameIdHolder").val());
 	query.find({
 	  success: function(results) {
-	    alert("Successfully retrieved " + results.length + " scores.");
+	    //alert("Successfully retrieved " + results.length + " scores.");
 	    // Do something with the returned Parse.Object values
 
-	    var obj = results[0];
-	    initMap(obj.get("gameBounds")[1], obj.get("gameBounds")[0], obj.get("gameBounds")[1], obj.get("gameBounds")[0], obj.get("gameBounds")[2]);
-	      
+	    if(results.length != 1){
+	    	$("#gameFindDiv").show();
+	    } else {
+		    var obj = results[0];
+		    initMap(obj.get("gameBounds")[1], obj.get("gameBounds")[0], obj.get("gameBounds")[1], obj.get("gameBounds")[0], obj.get("gameBounds")[2], obj);
+
+		    $("#holder_title").html(obj.get("gameName"));
+		    $("#holder_creationDate").html(obj.createdAt);
+		    $("#holder_ownerName").html(obj.get("owner"));
+		    $("#holder_radius").html(obj.get("gameBounds")[2]);
+	    }
+
+
+		
 	    
 	  },
 	  error: function(error) {
+	  	$("#gameFindDiv").show();
 	    alert("Error: " + error.code + " " + error.message);
 	  }
 	});
 }
 
 
-function initMap(x1, y1, x2, y2, r) {
+function initMap(x1, y1, x2, y2, r, obj) {
 
-  gMapLoad(x1, y1, x2, y2, r);
+  gMapLoad(x1, y1, x2, y2, r, obj);
  
   $("#statsBoard").show();
   $("#playersBoard").show();
   
 }
 
-function gMapLoad(x1, y1, x2, y2, r){
+function gMapLoad(x1, y1, x2, y2, r, obj){
 	var customMapType = new google.maps.StyledMapType([
       {
         stylers: [
@@ -88,7 +111,12 @@ function gMapLoad(x1, y1, x2, y2, r){
  	y1 = map.getBounds().getNorthEast().lng();
 	x2 = map.getBounds().getSouthWest().lat();
 	y2 = map.getBounds().getSouthWest().lng();
-	
+
+	$("#holder_northEastPoint").html( "North East Point: <br>(" + Math.round(map.getBounds().getNorthEast().lng()*1000)/1000 + ", " + Math.round(map.getBounds().getNorthEast().lat()*1000)/1000 + ")");
+	$("#holder_southWestPoint").html( "South West Point: <br>(" + Math.round(map.getBounds().getSouthWest().lng()*1000)/1000 + ", " + Math.round(map.getBounds().getSouthWest().lat()*1000)/1000 + ")");
+
+
+
 	var dlon = y2 - y2 ;
 	var dlat = x2 - x1 ;
 	var a = Math.pow((Math.sin(dlat/2)),2) + Math.cos(x1) * Math.cos(x2) * Math.pow((Math.sin(dlon/2)),2);
@@ -106,12 +134,17 @@ function gMapLoad(x1, y1, x2, y2, r){
 	var centerX = window.innerWidth /2;
 	var centerY = window.innerHeight /2;
 
-  	overlayLoad(centerX, centerY, horiz, vertic, r);
+	$("#holder_centerPoint").html("Center: (" + centerX + "px, " + centerY + "px)");
+
+  	overlayLoad(centerX, centerY, horiz, vertic, r, obj);
+
      
   });
+
+
 }
 
-function overlayLoad(centerX, centerY, horiz, vertic, r){
+function overlayLoad(centerX, centerY, horiz, vertic, r, obj){
 
 	var c=document.getElementById("mapOverlay");
 	c.width = window.innerWidth;
@@ -124,7 +157,10 @@ function overlayLoad(centerX, centerY, horiz, vertic, r){
 	ctx.fillStyle = "Color.white";
 	ctx.stroke();
 
-	addCenter(centerX, centerY, horiz, vertic, r);
+	addCenter(centerX, centerY, horiz, vertic, r, obj);
+
+	
+	
 }
 
 function setScale(integer){
@@ -141,7 +177,7 @@ function setScale(integer){
 	}
 }
 
-function addCenter(centerX, centerY, horiz, vertic, r){
+function addCenter(centerX, centerY, horiz, vertic, r, obj){
 	var scale = window.innerWidth / horiz * zoomLev;
 	//alert(scale);
 	//alert(horiz);
@@ -149,9 +185,14 @@ function addCenter(centerX, centerY, horiz, vertic, r){
 	var radius = r * scale;
 	//alert("Horizontal Distance = " + horiz/zoomLev + "\nVertical Distance = " + vertic/zoomLev);
 
-	while(radius < window.innerHeight/3){
+	while(radius < window.innerHeight/5){
 		zoomLev++;
 		map.setZoom(zoomLev);
+
+		x1 = map.getBounds().getNorthEast().lat();
+	 	y1 = map.getBounds().getNorthEast().lng();
+		x2 = map.getBounds().getSouthWest().lat();
+		y2 = map.getBounds().getSouthWest().lng();
 
 		var dlon = y2 - y2 ;
 		var dlat = x2 - x1 ;
@@ -186,4 +227,117 @@ function addCenter(centerX, centerY, horiz, vertic, r){
 	ctx.fillStyle = "rgba(51, 204, 255,0.1)";
 	ctx.fill();
 
+
+
+}
+
+function plotPoints(game){
+	var GameScore = Parse.Object.extend("MatchInfo");
+	var query = new Parse.Query(GameScore);
+	query.equalTo("gameKey", game);
+	query.find({
+	  success: function(results) {
+	    //alert("Successfully retrieved " + results.length + " scores.");
+	    // Do something with the returned Parse.Object values
+
+	   	x1 = map.getBounds().getNorthEast().lat(); // lat
+	 	y1 = map.getBounds().getNorthEast().lng(); // long
+		x2 = map.getBounds().getSouthWest().lat();
+		y2 = map.getBounds().getSouthWest().lng();
+		console.log(x1);
+
+		var c=document.getElementById("mapOverlay");
+		var ctx=c.getContext("2d");
+
+	    for(var i = 0; i < results.length; i++){
+	    	var obj = results[i];
+
+	    	var locArr = obj.get("locations");
+	    	
+	    	var randR = Math.round(Math.random() * 255);
+	    	var randG = Math.round(Math.random() * 255);
+	    	var randB = Math.round(Math.random() * 255);
+	    	var randA = 1;
+
+	    	var newColor = "rgba(" + randR + "," + randG + "," + randB + "," + randA + ")";
+	    	console.log(newColor);
+
+	    	obj.set("color", newColor);
+	    	$("#holder_color" + obj.get("user")).css("background-color", newColor);
+			
+	    	obj.save();
+
+	    	var ycordOLD = (locArr[1][0]-y1)/(y2-y1) * window.innerHeight ; //long
+	    	var xcordOLD = (locArr[1][1]-x1)/(x2-x1) * window.innerWidth ; //lat
+
+
+	    	for(var j = 0; j < locArr.length; j++){
+	    		var ycord = (locArr[j][0]-y1)/(y2-y1) * window.innerHeight ; //long
+	    		var xcord = (locArr[j][1]-x1)/(x2-x1) * window.innerWidth ; //lat
+
+	    		console.log(xcord, ycord);
+
+	    		ctx.beginPath();
+	    		ctx.moveTo(xcordOLD,ycordOLD);
+	    		ctx.strokeStyle = newColor;
+				ctx.lineTo(xcord,ycord);
+				ctx.stroke();
+
+	    		ctx.beginPath();
+				ctx.lineWidth = 1;
+				ctx.arc(xcord,ycord, 3 ,0,2*Math.PI);
+				ctx.strokeStyle = "rgb(0,0,0)";
+				ctx.stroke();
+				ctx.fillStyle = newColor;
+				
+				ctx.fill();
+
+				ycordOLD = ycord;
+				xcordOLD = xcord;
+
+	    	}
+	    }
+	    
+		
+	    
+	  },
+	  error: function(error) {
+	  	$("#gameFindDiv").show();
+	    alert("Error: " + error.code + " " + error.message);
+	  }
+	});
+}
+
+function stepsForPlot(obj){
+
+}
+
+function loadUsers(game){
+	console.log("LOADING USERS");
+	var GameScore = Parse.Object.extend("MatchInfo");
+	var query = new Parse.Query(GameScore);
+	query.equalTo("gameKey", game);
+	query.find({
+	  success: function(results) {
+	    console.log("Successfully retrieved " + results.length + " scores.");
+	    // Do something with the returned Parse.Object value
+	    $("#playerHolder").html("");
+	    for(var i = 0; i < results.length; i++){
+	    	var obj = results[i];
+
+	    	$("#playerHolder").html($("#playerHolder").html() +  
+	    		"<div class=\"panel panel-default\">"+
+	    		"<div class=\"panel-body\">"+"<div class=\"list-group\" style=\"text-align: center;\">"+
+	    		"<a class=\"list-group-item active\"  style=\"background-color: white; color: black;\">"+
+	    		obj.get("user") +"<br><span class=\"label label-warning\" id=\"holder_color" + obj.get("user") + "\"> Seeker</span>  <br>                                </a>                                <a class=\"list-group-item\"> <span class=\"badge\">-89.293</span> <span class=\"badge\">34.312</span> <br>                                </a>                                <a href=\"#\" class=\"list-group-item\"> <span class=\"label label-success\"> 48 miles </span> <span class=\"label label-danger\"> 420 calories </span>                                </a>                            </div>                        </div>                    </div>")
+	    }
+	    
+		
+	    
+	  },
+	  error: function(error) {
+	  	$("#gameFindDiv").show();
+	    alert("Error: " + error.code + " " + error.message);
+	  }
+	});
 }
