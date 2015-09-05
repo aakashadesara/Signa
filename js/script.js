@@ -1,7 +1,8 @@
 var map;
+var zoomLev = 16;
 
 $(document).ready(function(){
-	initMap(35.901258, -79.172182, 43.901258, -71.172182, .10);
+	initMap(40.7127, -74.0059, 40.7127, -74.0059, .20);
 });
 
 
@@ -34,7 +35,7 @@ function gMapLoad(x1, y1, x2, y2, r){
   var customMapTypeId = 'custom_style';
 
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 18,
+    zoom: zoomLev,
     center: {lat: (x1+x2)/2, lng: (y1+y2)/2},  
     mapTypeControlOptions: {
       mapTypeIds: [google.maps.MapTypeId.ROADMAP, customMapTypeId]
@@ -104,12 +105,12 @@ function setScale(integer){
 }
 
 function addCenter(centerX, centerY, horiz, vertic, r){
-	var scale = window.innerWidth / horiz * 18;
+	var scale = window.innerWidth / horiz * zoomLev;
 	//alert(scale);
-	alert(horiz);
+	//alert(horiz);
 	
 	var radius = r * scale;
-	alert("Horizontal Distance = " + horiz/18 + "\nVertical Distance = " + vertic/18);
+	//alert("Horizontal Distance = " + horiz/zoomLev + "\nVertical Distance = " + vertic/zoomLev);
 
 
 	var c=document.getElementById("mapOverlay");

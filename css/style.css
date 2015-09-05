@@ -3,10 +3,26 @@
 	height: 100%;
 	position: absolute;
 	background-color: red;
+	z-index: 1;
 }
 
 #mapOverlay {
 	
 	position: absolute;
 	background-color: rgba(0,0,0,.3);
+	z-index: 2;
+}
+
+#statsBoard {
+	position: absolute;
+	height: 100%;
+	background-color: rgba(0,0,0,0.5);
+	z-index: 3;
+}
+
+#playersBoard {
+	position: absolute;
+	height: 100%;
+	background-color: rgba(0,0,0,0.5);
+	z-index: 3;1
 }
