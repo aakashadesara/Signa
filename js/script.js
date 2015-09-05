@@ -231,6 +231,13 @@ function addCenter(centerX, centerY, horiz, vertic, r, obj){
 
 }
 
+var ycordOLD;
+var xcordOLD;
+var amex;
+var stepCount = 1;
+
+var results;
+
 function plotPoints(game){
 	var GameScore = Parse.Object.extend("MatchInfo");
 	var query = new Parse.Query(GameScore);
@@ -240,11 +247,16 @@ function plotPoints(game){
 	    //alert("Successfully retrieved " + results.length + " scores.");
 	    // Do something with the returned Parse.Object values
 
-	   	x1 = map.getBounds().getNorthEast().lat(); // lat
+	    //var zerox = step(results1);
+	 
+	    	setInterval(function(){step(results);}, 3000);
+	    
+	    
+
+	   	/*x1 = map.getBounds().getNorthEast().lat(); // lat
 	 	y1 = map.getBounds().getNorthEast().lng(); // long
 		x2 = map.getBounds().getSouthWest().lat();
 		y2 = map.getBounds().getSouthWest().lng();
-		console.log(x1);
 
 		var c=document.getElementById("mapOverlay");
 		var ctx=c.getContext("2d");
@@ -267,36 +279,40 @@ function plotPoints(game){
 			
 	    	obj.save();
 
-	    	var ycordOLD = (locArr[1][0]-y1)/(y2-y1) * window.innerHeight ; //long
+	    	ycordOLD = (locArr[1][0]-y1)/(y2-y1) * window.innerHeight ; //long
 	    	var xcordOLD = (locArr[1][1]-x1)/(x2-x1) * window.innerWidth ; //lat
 
 
-	    	for(var j = 0; j < locArr.length; j++){
-	    		var ycord = (locArr[j][0]-y1)/(y2-y1) * window.innerHeight ; //long
-	    		var xcord = (locArr[j][1]-x1)/(x2-x1) * window.innerWidth ; //lat
-
-	    		console.log(xcord, ycord);
-
-	    		ctx.beginPath();
-	    		ctx.moveTo(xcordOLD,ycordOLD);
-	    		ctx.strokeStyle = newColor;
-				ctx.lineTo(xcord,ycord);
-				ctx.stroke();
-
-	    		ctx.beginPath();
-				ctx.lineWidth = 1;
-				ctx.arc(xcord,ycord, 3 ,0,2*Math.PI);
-				ctx.strokeStyle = "rgb(0,0,0)";
-				ctx.stroke();
-				ctx.fillStyle = newColor;
+	    	//for(amex = 0; amex < locArr.length; ){
+	    		
 				
-				ctx.fill();
+			var ycord = (locArr[amex][0]-y1)/(y2-y1) * window.innerHeight ; //long
+			var xcord = (locArr[amex][1]-x1)/(x2-x1) * window.innerWidth ; //lat
 
-				ycordOLD = ycord;
-				xcordOLD = xcord;
+			console.log(xcord, ycord);
 
-	    	}
-	    }
+			ctx.beginPath();
+			ctx.moveTo(xcordOLD,ycordOLD);
+			ctx.strokeStyle = newColor;
+			ctx.lineTo(xcord,ycord);
+			ctx.stroke();
+
+			ctx.beginPath();
+			ctx.lineWidth = 1;
+			ctx.arc(xcord,ycord, 3 ,0,2*Math.PI);
+			ctx.strokeStyle = "rgb(0,0,0)";
+			ctx.stroke();
+			ctx.fillStyle = newColor;
+			
+			ctx.fill();
+
+			ycordOLD = ycord;
+			xcordOLD = xcord;
+
+			setTimeout(inForLoop(), 3000);
+				
+	    	//}
+	    }*/
 	    
 		
 	    
@@ -308,8 +324,154 @@ function plotPoints(game){
 	});
 }
 
-function stepsForPlot(obj){
+var ycordOLD;
+var xcordOLD;
+var colorArr = [];
 
+var lineArr = [];
+
+function step(results){
+
+	
+	stepCount++;
+
+	x1 = map.getBounds().getNorthEast().lat(); // lat
+ 	y1 = map.getBounds().getNorthEast().lng(); // long
+	x2 = map.getBounds().getSouthWest().lat();
+	y2 = map.getBounds().getSouthWest().lng();
+
+	var c=document.getElementById("mapOverlay");
+	var ctx=c.getContext("2d");	
+
+
+	var add = true;
+	var g;
+	for(g = 0; g < results.length; g++){
+		for(var j = 0; j < lineArr.length; j++){
+			if(lineArr[j][0] == results[g].get("user")){
+				add = false;
+			}
+		}
+		if(add){
+		var obj = results[g];
+		var a = [obj.get("user") + "",0 + obj.get("locations")[0][0], 0 + obj.get("locations")[0][1], 0];
+		lineArr.push(a);
+	}
+	
+		
+	}
+
+	
+	console.log(lineArr);
+
+	var lineI;
+
+	for(var lineI = 0; lineI < results.length; lineI++){
+		for(j = 0; j < lineArr.length; j++){
+			if(results[lineI].get("user") == lineArr[j][0]){
+				break;
+			}
+		}
+
+
+		var obj = results[lineI];
+
+		var locArr = obj.get("locations");
+		
+		var randR = Math.round(Math.random() * 255);
+		var randG = Math.round(Math.random() * 255);
+		var randB = Math.round(Math.random() * 255);
+		var randA = 1;
+
+		var newColor;
+
+		var add = true;
+		for(var a = 0; a < colorArr.length; a++){
+			if(colorArr[a][0] == obj.get("user")){
+				add = false;
+			}
+		}
+		if(add){
+			newColor = "rgba(" + randR + "," + randG + "," + randB + "," + randA + ")";
+			console.log(newColor);
+
+			obj.set("color", newColor);
+			$("#holder_color" + obj.get("user")).css("background-color", newColor);
+
+			var arr = [obj.get("user"), newColor];
+			colorArr.push(arr);
+		} else {
+			for(var a = 0; a < colorArr.length; a++){
+				if(colorArr[a][0] == obj.get("user")){
+					newColor = colorArr[a][1];
+				}
+			}
+		}
+		
+		obj.save();
+
+		var ycord = (locArr[stepCount][0]-y1)/(y2-y1) * window.innerHeight ; //long
+		var xcord = (locArr[stepCount][1]-x1)/(x2-x1) * window.innerWidth ; //lat
+
+	ctx.beginPath();
+		ctx.moveTo(lineArr[lineI][1],lineArr[lineI][2]);
+		
+		ctx.strokeStyle = newColor;
+		ctx.lineTo(xcord,ycord);
+		ctx.stroke();
+
+		ctx.beginPath();
+		ctx.lineWidth = 1;
+		ctx.arc(lineArr[lineI][1],lineArr[lineI][2], 5 ,0,2*Math.PI);
+		ctx.strokeStyle = "rgb(0,0,0)";
+		ctx.stroke();
+		ctx.fillStyle = newColor;
+
+		if(stepCount >= 1)
+			lineArr[lineI][3] += returnMilesDistance(locArr[stepCount-1][0], locArr[stepCount-1][1], locArr[stepCount][0], locArr[stepCount][1]);
+
+		$("#holder_distance" + obj.get("user")).html(Math.round(lineArr[lineI][3]/10*100)/100 + " Miles");
+		
+		$("#holder_lng" + obj.get("user")).html(Math.round(locArr[stepCount][0] * 10000) / 10000);
+		$("#holder_lat" + obj.get("user")).html(Math.round(locArr[stepCount][1] * 10000) / 10000);
+
+		$("#holder_calsBurned" + obj.get("user")).html(Math.round(lineArr[lineI][3]/10*100)/100 * 64 + " Calories");
+
+		ctx.fill();
+
+		lineArr[lineI][1] = xcord;
+		lineArr[lineI][2] = ycord;
+
+		console.log(lineArr[lineI][0] + " " + lineArr[lineI][1] + " " + lineArr[lineI][2]);
+
+
+		if(stepCount < 1){
+			lineArr[lineI][2] = (locArr[1][0]-y1)/(y2-y1) * window.innerHeight ; //long
+			lineArr[lineI][1] = (locArr[1][1]-x1)/(x2-x1) * window.innerWidth ; //lat
+		}
+
+		//for(amex = 0; amex < locArr.length; ){
+			
+			
+		
+
+		//console.log(xcord, ycord);
+	
+		
+	}
+}
+
+function returnMilesDistance(x1, y1, x2, y2){
+	var dlon = y2 - y1 ;
+	var dlat = x2 - x1 ;
+	var a = Math.pow((Math.sin(dlat/2)),2) + Math.cos(x1) * Math.cos(x2) * Math.pow((Math.sin(dlon/2)),2);
+	var c = 2 * Math.atan( Math.sqrt(a), Math.sqrt(1-a) ); 
+	var d = 3959 * c;
+
+	if(d > 0)
+		return d;
+	else
+		return 0;
 }
 
 function loadUsers(game){
@@ -329,7 +491,14 @@ function loadUsers(game){
 	    		"<div class=\"panel panel-default\">"+
 	    		"<div class=\"panel-body\">"+"<div class=\"list-group\" style=\"text-align: center;\">"+
 	    		"<a class=\"list-group-item active\"  style=\"background-color: white; color: black;\">"+
-	    		obj.get("user") +"<br><span class=\"label label-warning\" id=\"holder_color" + obj.get("user") + "\"> Seeker</span>  <br>                                </a>                                <a class=\"list-group-item\"> <span class=\"badge\">-89.293</span> <span class=\"badge\">34.312</span> <br>                                </a>                                <a href=\"#\" class=\"list-group-item\"> <span class=\"label label-success\"> 48 miles </span> <span class=\"label label-danger\"> 420 calories </span>                                </a>                            </div>                        </div>                    </div>")
+	    		obj.get("user") +"<br><span class=\"label label-warning\" id=\"holder_color" + obj.get("user") + "\"> Seeker</span>  <br>"+
+	    		"</a>"+
+	    		"<a class=\"list-group-item\"> <span class=\"badge\" id=\"holder_lng" + obj.get("user") + "\"></span> <span class=\"badge\" id=\"holder_lat" + obj.get("user") + "\"></span> <br>"+
+	    		"</a>"+
+	    		"<a href=\"#\" class=\"list-group-item\"> <span class=\"label label-success\" id=\"holder_distance" + obj.get("user") + "\"> </span> <span class=\"label label-danger\" id=\"holder_calsBurned" + obj.get("user") + "\"> </span>"+
+	    		"</a>"+
+	    		"</div>"+"</div>"+
+	    		"</div>")
 	    }
 	    
 		

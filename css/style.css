@@ -42,5 +42,12 @@ body {
 	border-radius: 10px;
 	background-color: rgba(0,0,0,0.7);
 	z-index: 3;
-	margin-top: 5%;
+	margin-top: 15%;
+}
+
+#gameStatsDiv {
+	position: absolute;
+	height: 100px;
+	background-color: rgba(0,0,0,0.5);
+	z-index: 4;
 }
