@@ -11,6 +11,7 @@ $(document).ready(function(){
 	zoomLev = 1;
 	$("#statsBoard").hide();
 	$("#playersBoard").hide();
+	$("#gameStatsDiv").hide();
 
 	$("#findGame").click(function(){
 		$("#beginMap").click(function(){
@@ -47,7 +48,7 @@ function findMap(){
 		    $("#holder_title").html(obj.get("gameName"));
 		    $("#holder_creationDate").html(obj.createdAt);
 		    $("#holder_ownerName").html(obj.get("owner"));
-		    $("#holder_radius").html(obj.get("gameBounds")[2]);
+		    $("#holder_radius").html(obj.get("gameBounds")[2] + " miles");
 	    }
 
 
@@ -68,6 +69,7 @@ function initMap(x1, y1, x2, y2, r, obj) {
  
   $("#statsBoard").show();
   $("#playersBoard").show();
+  $("#gameStatsDiv").show();
   
 }
 
@@ -332,6 +334,23 @@ var lineArr = [];
 
 function step(results){
 
+
+	var maxTot = -1;
+
+	for(var i = 0; i < results.length; i++){
+		var loc = results[i].get("locations");
+		var tot = 0;
+		for(var j = 0; j < loc.length; j++){
+			tot+= 5;
+		}
+		if(tot > maxTot){
+			maxTot = tot;
+		}
+	}
+	
+	if(maxTot / 5 >= stepCount){
+	$("#holder_gameTiming").html("<div class=\"progress-bar\" style=\"width:"+ (stepCount*5/maxTot * 100) +"%\"></div>")
+
 	
 	stepCount++;
 
@@ -457,7 +476,7 @@ function step(results){
 
 		//console.log(xcord, ycord);
 	
-		
+		}
 	}
 }
 
@@ -472,6 +491,10 @@ function returnMilesDistance(x1, y1, x2, y2){
 		return d;
 	else
 		return 0;
+}
+
+function sortByCalories(){
+	console.log("Sorted");
 }
 
 function loadUsers(game){

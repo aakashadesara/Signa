@@ -17,8 +17,8 @@
             <br> 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h5 id="holder_title">Game Name</h5>
-                    <a class="label label-success" style="font-size: 120%;"> Live </a> <a id="beginMap" class="btn btn-primary">Begin Map</a>
+                    <h3 id="holder_title">Game Name</h3>
+                    <a class="label label-primary" style="font-size: 120%;"> Playback </a> 
                 </div>
                 <div class="panel-body" id="holder_creationDate"> 
                     00/00/0000 - 00:00:00
@@ -48,7 +48,7 @@
             </a>
             <div class="list-group" style="overflow-y: scroll; height: 20%;">
                 <a href="#" class="list-group-item">
-                    <p class="text-primary"><strong style="color: white;">Kamesh</strong>  I see you beta</p>
+                    <p class="text-primary"><strong style="color: white;">Kamesh</strong>  I see you beta <br><strong style="font-size: 70%"> 1:54pm </strong></p>
                 </a>
                 <a href="#" class="list-group-item">
                     <p class="text-primary"><strong style="color: white;">Aakash</strong> Who?</p>
@@ -74,8 +74,12 @@
             </div>
             <a id="findGame" class="btn btn-primary btn-lg">Find Game</a>
         </div>
-        <div class="col-md-8 col-md-offset-2" id="gameStatsDiv">
-
+        <div class="col-md-8 col-md-offset-2" style="text-align: center" id="gameStatsDiv">
+        	<br>
+        	<div class="progress progress-striped active" id="holder_gameTiming" >
+			  <div class="progress-bar" style="width: 0%"></div>
+			</div>
+			<a id="beginMap" class="btn btn-primary">Begin Map</a>
         </div>
         <div id="playersBoard" class="col-md-2 col-md-offset-10" style="height: 100%;">
             <div class="panel panel-default" style="text-align: center;">
@@ -93,11 +97,11 @@
                         <div class="panel-body">
                             <div class="list-group" style="text-align: center;">
                                 <a class="list-group-item active"  style="background-color: white; color: black;">
-                                Aakash Adesara <br><span class="label label-warning" id="holder_color"> Seeker</span>  <br>
+                                Players <br><span class="label label-warning" id="holder_color"> Position</span>  <br>
                                 </a>
-                                <a class="list-group-item"> <span class="badge">-89.293</span> <span class="badge">34.312</span> <br>
+                                <a class="list-group-item"> <span class="badge">Longitude</span> <span class="badge">Latitude</span> <br>
                                 </a>
-                                <a href="#" class="list-group-item"> <span class="label label-success"> 48 miles </span> <span class="label label-danger"> 420 calories </span>
+                                <a href="#" class="list-group-item"> <span class="label label-success"> Miles  </span> <span class="label label-danger"> Calories  </span>
                                 </a>
                             </div>
                         </div>
