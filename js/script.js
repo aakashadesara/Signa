@@ -1,7 +1,7 @@
 var map;
 
 $(document).ready(function(){
-	initMap(37.901258, -77.172182, 41.901258, -73.172182, 10);
+	initMap(35.901258, -79.172182, 43.901258, -71.172182, .10);
 });
 
 
@@ -89,8 +89,28 @@ function overlayLoad(centerX, centerY, horiz, vertic, r){
 	addCenter(centerX, centerY, horiz, vertic, r);
 }
 
+function setScale(integer){
+	if(integer < 10){
+		return 1;
+	} else if (integer < 100){
+		return 10;
+	} else if (integer < 1000){
+		return 100;
+	} else if (integer < 10000){
+		return 1000;
+	} else if (integer < 100000){
+		return 10000;
+	}
+}
+
 function addCenter(centerX, centerY, horiz, vertic, r){
-	alert(horiz / window.innerWidth);
+	var scale = window.innerWidth / horiz * 18;
+	//alert(scale);
+	alert(horiz);
+	
+	var radius = r * scale;
+	alert("Horizontal Distance = " + horiz/18 + "\nVertical Distance = " + vertic/18);
+
 
 	var c=document.getElementById("mapOverlay");
 	c.width = window.innerWidth;
@@ -99,7 +119,7 @@ function addCenter(centerX, centerY, horiz, vertic, r){
 	var ctx=c.getContext("2d");
 	ctx.beginPath();
 	ctx.lineWidth = 4;
-	ctx.arc(centerX,centerY,50,0,2*Math.PI);
+	ctx.arc(centerX,centerY, radius ,0,2*Math.PI);
 	ctx.strokeStyle = "rgb(255,255,255)";
 	ctx.stroke();
 
