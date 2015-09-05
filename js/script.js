@@ -1,19 +1,24 @@
 var map;
-var zoomLev = 4;
+var zoomLev = 1;
 
 $(document).ready(function(){
 	Parse.initialize("anMXyXSJx6d4Gq2AX5EZHCUt1XXLMv2GK9RIpNnL", "fIWlKdHonuiNySvHXsesopC1m3lVkPPaZCuw4xus");
 
-	$("#findGame").click(function(){
-		loadMatch();
-	})
 
-	initMap(35.901258, -79.172182, 43.901258, -71.172182,20);
+	initMap(35.901258, -79.172182, 43.901258, -71.172182, 2000);
 	$("#statsBoard").hide();
 	$("#playersBoard").hide();
+
+	$("#findGame").click(function(){
+		 $("#gameFindDiv").hide();
+		findMap();
+	});
+
+	
 });
 
-function loadMatch(){
+function findMap(){
+	alert($("#gameIdHolder").val());
 	var GameScore = Parse.Object.extend("Matches");
 	var query = new Parse.Query(GameScore);
 	query.equalTo("gameKey", $("#gameIdHolder").val());
@@ -21,14 +26,11 @@ function loadMatch(){
 	  success: function(results) {
 	    alert("Successfully retrieved " + results.length + " scores.");
 	    // Do something with the returned Parse.Object values
-	    
-		var obj = results[0];
-		
-		initMap(obj.get("gameBounds")[1], obj.get("gameBounds")[0], obj.get("gameBounds")[1], obj.get("gameBounds")[0],obj.get("gameBounds")[2]);
-		$("#gameFindDiv").hide();
-		$("#statsBoard").show();
-		$("#playersBoard").show();
 
+	    var obj = results[0];
+	    initMap(obj.get("gameBounds")[1], obj.get("gameBounds")[0], obj.get("gameBounds")[1], obj.get("gameBounds")[0], obj.get("gameBounds")[2]);
+	      
+	    
 	  },
 	  error: function(error) {
 	    alert("Error: " + error.code + " " + error.message);
@@ -38,7 +40,11 @@ function loadMatch(){
 
 
 function initMap(x1, y1, x2, y2, r) {
+
   gMapLoad(x1, y1, x2, y2, r);
+ 
+  $("#statsBoard").show();
+  $("#playersBoard").show();
   
 }
 
@@ -112,7 +118,11 @@ function overlayLoad(centerX, centerY, horiz, vertic, r){
 	c.height = window.innerHeight;
 
 	var ctx=c.getContext("2d");
-	
+	ctx.beginPath();
+	ctx.lineWidth = 4;
+	ctx.arc(0,0,50,0,2*Math.PI);
+	ctx.fillStyle = "Color.white";
+	ctx.stroke();
 
 	addCenter(centerX, centerY, horiz, vertic, r);
 }
@@ -141,7 +151,6 @@ function addCenter(centerX, centerY, horiz, vertic, r){
 
 	while(radius < window.innerHeight/3){
 		zoomLev++;
-		map.panTo();
 		map.setZoom(zoomLev);
 
 		var dlon = y2 - y2 ;
