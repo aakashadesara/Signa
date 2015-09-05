@@ -1,9 +1,40 @@
 var map;
-var zoomLev = 1;
+var zoomLev = 4;
 
 $(document).ready(function(){
-	initMap(35.901258, -79.172182, 43.901258, -71.172182,10);
+	Parse.initialize("anMXyXSJx6d4Gq2AX5EZHCUt1XXLMv2GK9RIpNnL", "fIWlKdHonuiNySvHXsesopC1m3lVkPPaZCuw4xus");
+
+	$("#findGame").click(function(){
+		loadMatch();
+	})
+
+	initMap(35.901258, -79.172182, 43.901258, -71.172182,20);
+	$("#statsBoard").hide();
+	$("#playersBoard").hide();
 });
+
+function loadMatch(){
+	var GameScore = Parse.Object.extend("Matches");
+	var query = new Parse.Query(GameScore);
+	query.equalTo("gameKey", $("#gameIdHolder").val());
+	query.find({
+	  success: function(results) {
+	    alert("Successfully retrieved " + results.length + " scores.");
+	    // Do something with the returned Parse.Object values
+	    
+		var obj = results[0];
+		
+		initMap(obj.get("gameBounds")[1], obj.get("gameBounds")[0], obj.get("gameBounds")[1], obj.get("gameBounds")[0],obj.get("gameBounds")[2]);
+		$("#gameFindDiv").hide();
+		$("#statsBoard").show();
+		$("#playersBoard").show();
+
+	  },
+	  error: function(error) {
+	    alert("Error: " + error.code + " " + error.message);
+	  }
+	});
+}
 
 
 function initMap(x1, y1, x2, y2, r) {
@@ -81,11 +112,7 @@ function overlayLoad(centerX, centerY, horiz, vertic, r){
 	c.height = window.innerHeight;
 
 	var ctx=c.getContext("2d");
-	ctx.beginPath();
-	ctx.lineWidth = 4;
-	ctx.arc(0,0,50,0,2*Math.PI);
-	ctx.fillStyle = "Color.white";
-	ctx.stroke();
+	
 
 	addCenter(centerX, centerY, horiz, vertic, r);
 }
