@@ -1,8 +1,8 @@
 var map;
-var zoomLev = 16;
+var zoomLev = 1;
 
 $(document).ready(function(){
-	initMap(40.7127, -74.0059, 40.7127, -74.0059, .20);
+	initMap(35.901258, -79.172182, 43.901258, -71.172182,10);
 });
 
 
@@ -112,6 +112,30 @@ function addCenter(centerX, centerY, horiz, vertic, r){
 	var radius = r * scale;
 	//alert("Horizontal Distance = " + horiz/zoomLev + "\nVertical Distance = " + vertic/zoomLev);
 
+	while(radius < window.innerHeight/3){
+		zoomLev++;
+		map.panTo();
+		map.setZoom(zoomLev);
+
+		var dlon = y2 - y2 ;
+		var dlat = x2 - x1 ;
+		var a = Math.pow((Math.sin(dlat/2)),2) + Math.cos(x1) * Math.cos(x2) * Math.pow((Math.sin(dlon/2)),2);
+		var c = 2 * Math.atan( Math.sqrt(a), Math.sqrt(1-a) ); 
+		var d = 3959 * c;
+		horiz =  d;
+
+		var dlon = y2 - y1 ;
+		var dlat = x2 - x2 ;
+		var a = Math.pow((Math.sin(dlat/2)),2) + Math.cos(x1) * Math.cos(x2) * Math.pow((Math.sin(dlon/2)),2);
+		var c = 2 * Math.atan( Math.sqrt(a), Math.sqrt(1-a) ); 
+		var d = 3959 * c;
+		vertic = d ;
+
+		scale = window.innerHeight / horiz * zoomLev;
+		radius = r * scale;
+		
+	}
+
 
 	var c=document.getElementById("mapOverlay");
 	c.width = window.innerWidth;
@@ -123,5 +147,7 @@ function addCenter(centerX, centerY, horiz, vertic, r){
 	ctx.arc(centerX,centerY, radius ,0,2*Math.PI);
 	ctx.strokeStyle = "rgb(255,255,255)";
 	ctx.stroke();
+	ctx.fillStyle = "rgba(51, 204, 255,0.1)";
+	ctx.fill();
 
 }
