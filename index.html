@@ -3,6 +3,7 @@
         <title>Signa</title>
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
+        <script type="text/javascript" src="js/circle.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js"></script>
         <script src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
         <link rel="stylesheet" type="text/css" href="css/boostrap.css">
@@ -13,6 +14,13 @@
         </div>
         <canvas width="100%" height="100%" id="mapOverlay">
         </canvas>
+   <!-- <canvas width="100%" height="100%" >
+    </canvas> -->
+
+        <div class="container">
+		    <div class="circles"></div>
+		</div>
+
         <div id="statsBoard" class="col-md-2">
             <br> 
             <div class="panel panel-default">
@@ -46,25 +54,9 @@
             <a class="list-group-item active">
             Messages
             </a>
-            <div class="list-group" style="overflow-y: scroll; height: 20%;">
-                <a href="#" class="list-group-item">
-                    <p class="text-primary"><strong style="color: white;">Kamesh</strong>  I see you beta <br><strong style="font-size: 70%"> 1:54pm </strong></p>
-                </a>
-                <a href="#" class="list-group-item">
-                    <p class="text-primary"><strong style="color: white;">Aakash</strong> Who?</p>
-                </a>
-                <a href="#" class="list-group-item">
-                    <p class="text-primary"><strong style="color: white;">Anant</strong> Kamesh beta.... I see youuuuu!</p>
-                </a>
-                <a href="#" class="list-group-item">
-                    <p class="text-primary"><strong style="color: white;">Kamesh</strong> Anant betaaaaa, I see youuuu!</p>
-                </a>
-                <a href="#" class="list-group-item">
-                    <p class="text-primary"><strong style="color: white;">Anant</strong> ;)</p>
-                </a>
-                <a href="#" class="list-group-item">
-                    <p class="text-primary"><strong style="color: white;">Aakash</strong> lol...</p>
-                </a>
+            <div class="list-group" style="overflow-y: scroll; height: 20%;" id="holder_messages">
+                
+                
             </div>
         </div>
         <div id="gameFindDiv" class="col-md-4 col-md-offset-4" style="text-align: center;">
@@ -77,7 +69,9 @@
         <div class="col-md-8 col-md-offset-2" style="text-align: center" id="gameStatsDiv">
         	<br>
         	<div class="progress progress-striped active" id="holder_gameTiming" >
-			  <div class="progress-bar" style="width: 0%"></div>
+			  
+			</div>
+			<div id="holder_thebuttons">
 			</div>
 			<a id="beginMap" class="btn btn-primary">Begin Map</a>
         </div>
@@ -87,7 +81,7 @@
                 <div class="panel-body">
                     <a href="#" class="btn btn-warning">Seekers</a> 
                     <a href="#" class="btn btn-info">Hiders</a>
-                    <a href="#" class="btn btn-danger">Calories</a>
+                    <a href="#" class="btn btn-danger" onClick="sortByCalories()">Calories</a>
                     <a href="#" class="btn btn-success">Distance</a>
                 </div>
             </div>

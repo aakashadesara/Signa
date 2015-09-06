@@ -1,10 +1,22 @@
 var map;
 var zoomLev = 4;
 
+var qual = 7;
+
+var backgroundAudio = new Audio('assets/interstellar.mp3'); 
+var chimeAudio = new Audio('assets/chime.mp3');
+var beaconAudio = new Audio('assets/beacon.mp3');
 
 
 $(document).ready(function(){
 	Parse.initialize("anMXyXSJx6d4Gq2AX5EZHCUt1XXLMv2GK9RIpNnL", "fIWlKdHonuiNySvHXsesopC1m3lVkPPaZCuw4xus");
+
+	
+	backgroundAudio.addEventListener('ended', function() {
+	    this.currentTime = 0;
+	    this.play();
+	}, false);
+	backgroundAudio.play();
 
 
 	initMap(35.901258, -79.172182, 43.901258, -71.172182, 2000);
@@ -15,7 +27,10 @@ $(document).ready(function(){
 
 	$("#findGame").click(function(){
 		$("#beginMap").click(function(){
+			$("#beginMap").hide();
+			$("#holder_thebuttons").html("<a onClick=\"location.reload()\" class=\"btn btn-primary\">New Save</a>")
 			loadUsers($("#gameIdHolder").val());
+			loadMessages($("#gameIdHolder").val());
 			plotPoints($("#gameIdHolder").val());
 			
 		});
@@ -29,8 +44,34 @@ $(document).ready(function(){
 	
 });
 
+function loadMessages(game){
+	var GameScore = Parse.Object.extend("Messages");
+	var query = new Parse.Query(GameScore);
+	query.equalTo("gameKey", game);
+	query.find({
+	  success: function(results) {
+	    console.log("Successfully retrieved " + results.length + " scores.");
+	    // Do something with the returned Parse.Object value
+	    for(var i = 0; i < results.length; i++){
+	    	var obj = results[i];
+	    	$("#holder_messages").html(
+	    		"<a class=\"list-group-item\">" +
+				"<p class=\"text-primary\"><strong style=\"color: white;\">"+ obj.get("user") +"</strong> - "+ obj.get("message") +"<br><strong style=\"font-size: 70%\">" + obj.createdAt +"</strong></p>"+
+				"</a>" + $("#holder_messages").html());
+	    }
+		
+	    
+	  },
+	  error: function(error) {
+	  	$("#gameFindDiv").show();
+	    alert("Error: " + error.code + " " + error.message);
+	  }
+	});
+}
+
 function findMap(){
-	alert($("#gameIdHolder").val());
+	chimeAudio.play();
+	//alert($("#gameIdHolder").val());
 	var GameScore = Parse.Object.extend("Matches");
 	var query = new Parse.Query(GameScore);
 	query.equalTo("gameKey", $("#gameIdHolder").val());
@@ -64,7 +105,7 @@ function findMap(){
 
 
 function initMap(x1, y1, x2, y2, r, obj) {
-
+  chimeAudio.play();
   gMapLoad(x1, y1, x2, y2, r, obj);
  
   $("#statsBoard").show();
@@ -77,9 +118,9 @@ function gMapLoad(x1, y1, x2, y2, r, obj){
 	var customMapType = new google.maps.StyledMapType([
       {
         stylers: [
-          {hue: '#74B0A9'},
+          {hue: '#196780'},
           {visibility: 'simplified'},
-          {gamma: 1},
+          {gamma: 0},
           {weight: 3}
         ]
       },
@@ -89,7 +130,7 @@ function gMapLoad(x1, y1, x2, y2, r, obj){
       },
       {
         featureType: 'water',
-        stylers: [{color: '#498287'}]
+        stylers: [{color: '#008FB2'}]
       }
     ], {
       name: 'Signa Style'
@@ -165,6 +206,8 @@ function overlayLoad(centerX, centerY, horiz, vertic, r, obj){
 	
 }
 
+function affectsLoad(){}
+
 function setScale(integer){
 	if(integer < 10){
 		return 1;
@@ -187,7 +230,7 @@ function addCenter(centerX, centerY, horiz, vertic, r, obj){
 	var radius = r * scale;
 	//alert("Horizontal Distance = " + horiz/zoomLev + "\nVertical Distance = " + vertic/zoomLev);
 
-	while(radius < window.innerHeight/5){
+	while(radius < window.innerHeight/qual){
 		zoomLev++;
 		map.setZoom(zoomLev);
 
@@ -222,12 +265,13 @@ function addCenter(centerX, centerY, horiz, vertic, r, obj){
 
 	var ctx=c.getContext("2d");
 	ctx.beginPath();
-	ctx.lineWidth = 4;
+	ctx.lineWidth = 10;
 	ctx.arc(centerX,centerY, radius ,0,2*Math.PI);
 	ctx.strokeStyle = "rgb(255,255,255)";
 	ctx.stroke();
 	ctx.fillStyle = "rgba(51, 204, 255,0.1)";
 	ctx.fill();
+	ctx.lineWidth = 4;
 
 
 
@@ -334,6 +378,7 @@ var lineArr = [];
 
 function step(results){
 
+	beaconAudio.play();
 
 	var maxTot = -1;
 
