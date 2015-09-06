@@ -30,6 +30,7 @@ $(document).ready(function(){
 			$("#beginMap").hide();
 			$("#holder_thebuttons").html("<a onClick=\"location.reload()\" class=\"btn btn-primary\">New Save</a>")
 			loadUsers($("#gameIdHolder").val());
+			loadPictures($("#gameIdHolder").val());
 			loadMessages($("#gameIdHolder").val());
 			plotPoints($("#gameIdHolder").val());
 			
@@ -542,6 +543,28 @@ function sortByCalories(){
 	console.log("Sorted");
 }
 
+function loadPictures(game){
+	var GameScore = Parse.Object.extend("Pictures");
+	var query = new Parse.Query(GameScore);
+	query.equalTo("gameKey", game);
+	query.find({
+	  success: function(results) {
+	  	for(var i = 0; i < results.length; i++){
+	  		var obj = results[i];
+	  		var prof = obj.get("image");
+	  		$("#holder_pictures").html($("#holder_pictures").html() + "<img src=\""+prof.url()+"\" width=\"100%\" class=\"img-rounded\">");
+	  	}
+	    
+		
+	    
+	  },
+	  error: function(error) {
+	  	$("#gameFindDiv").show();
+	    alert("Error: " + error.code + " " + error.message);
+	  }
+	});
+}
+
 function loadUsers(game){
 	console.log("LOADING USERS");
 	var GameScore = Parse.Object.extend("MatchInfo");
@@ -555,18 +578,30 @@ function loadUsers(game){
 	    for(var i = 0; i < results.length; i++){
 	    	var obj = results[i];
 
-	    	$("#playerHolder").html($("#playerHolder").html() +  
+	    	var query1 = new Parse.Query(Parse.User);
+			query1.equalTo("username", obj.get("user"));  
+			query1.find({
+			  success: function(result) {
+			    // Do stuff
+			    alert(results.length);
+			    var obj1 = result[0];
+			    var prof = obj1.get("profilePicture");
+			    $("#playerHolder").html($("#playerHolder").html() +  
 	    		"<div class=\"panel panel-default\">"+
 	    		"<div class=\"panel-body\">"+"<div class=\"list-group\" style=\"text-align: center;\">"+
-	    		"<a class=\"list-group-item active\"  style=\"background-color: white; color: black;\">"+
-	    		obj.get("user") +"<br><span class=\"label label-warning\" id=\"holder_color" + obj.get("user") + "\"> Seeker</span>  <br>"+
+	    		"<a class=\"list-group-item active\"  style=\"background-color: white; color: black;\">"+ "<img src=\""+prof.url()+"\" width=\"50px\" class=\"img-circle\"><br>" + 
+	    		obj1.get("username") +"<br><span class=\"label label-warning\" id=\"holder_color" + obj1.get("username") + "\"> Seeker</span>  <br>"+
 	    		"</a>"+
-	    		"<a class=\"list-group-item\"> <span class=\"badge\" id=\"holder_lng" + obj.get("user") + "\"></span> <span class=\"badge\" id=\"holder_lat" + obj.get("user") + "\"></span> <br>"+
+	    		"<a class=\"list-group-item\"> <span class=\"badge\" id=\"holder_lng" + obj1.get("username") + "\"></span> <span class=\"badge\" id=\"holder_lat" + obj1.get("username") + "\"></span> <br>"+
 	    		"</a>"+
-	    		"<a href=\"#\" class=\"list-group-item\"> <span class=\"label label-success\" id=\"holder_distance" + obj.get("user") + "\"> </span> <span class=\"label label-danger\" id=\"holder_calsBurned" + obj.get("user") + "\"> </span>"+
+	    		"<a href=\"#\" class=\"list-group-item\"> <span class=\"label label-success\" id=\"holder_distance" + obj1.get("username") + "\"> </span> <span class=\"label label-danger\" id=\"holder_calsBurned" + obj1.get("username") + "\"> </span>"+
 	    		"</a>"+
 	    		"</div>"+"</div>"+
 	    		"</div>")
+			  }
+			});
+
+	    	
 	    }
 	    
 		
