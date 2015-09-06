@@ -1,7 +1,7 @@
 var map;
 var zoomLev = 4;
 
-var qual = 7;
+var qual = 5;
 
 var backgroundAudio = new Audio('assets/interstellar.mp3'); 
 var chimeAudio = new Audio('assets/chime.mp3');
@@ -9,8 +9,7 @@ var beaconAudio = new Audio('assets/beacon.mp3');
 
 
 $(document).ready(function(){
-	Parse.initialize("anMXyXSJx6d4Gq2AX5EZHCUt1XXLMv2GK9RIpNnL", "fIWlKdHonuiNySvHXsesopC1m3lVkPPaZCuw4xus");
-
+	Parse.initialize("f8B2noOhrK2FD7Ou5bQV4DyburFLtVr2EUgsakzD", "iO5enqDZrE1WggyRsR4p8DOBrP4cQ9ciEsIvhhEo");
 	
 	backgroundAudio.addEventListener('ended', function() {
 	    this.currentTime = 0;
@@ -409,6 +408,7 @@ function step(results){
 	var ctx=c.getContext("2d");	
 
 
+
 	var add = true;
 	var g;
 	for(g = 0; g < results.length; g++){
@@ -478,7 +478,11 @@ function step(results){
 		var ycord = (locArr[stepCount][0]-y1)/(y2-y1) * window.innerHeight ; //long
 		var xcord = (locArr[stepCount][1]-x1)/(x2-x1) * window.innerWidth ; //lat
 
-	ctx.beginPath();
+		if(stepCount == 0)	
+			ctx.strokeStyle = "rgb(0,0,0,0)";
+		else
+			ctx.strokeStyle = "rgb(0,0,0)";
+		ctx.beginPath();
 		ctx.moveTo(lineArr[lineI][1],lineArr[lineI][2]);
 		
 		ctx.strokeStyle = newColor;
@@ -583,28 +587,53 @@ function loadUsers(game){
 			query1.find({
 			  success: function(result) {
 			    // Do stuff
-			    alert(results.length);
+			    //alert(results.length);
 			    var obj1 = result[0];
 			    var prof = obj1.get("profilePicture");
 			    $("#playerHolder").html($("#playerHolder").html() +  
 	    		"<div class=\"panel panel-default\">"+
 	    		"<div class=\"panel-body\">"+"<div class=\"list-group\" style=\"text-align: center;\">"+
 	    		"<a class=\"list-group-item active\"  style=\"background-color: white; color: black;\">"+ "<img src=\""+prof.url()+"\" width=\"50px\" class=\"img-circle\"><br>" + 
-	    		obj1.get("username") +"<br><span class=\"label label-warning\" id=\"holder_color" + obj1.get("username") + "\"> Seeker</span>  <br>"+
+	    		obj1.get("username") +"<br><span class=\"label label-warning\" id=\"holder_color" + obj1.get("username") + "\"> </span><span class=\"label label-info\" id=\"holder_position" + obj1.get("username") +"\"> </span> <br>"+
 	    		"</a>"+
 	    		"<a class=\"list-group-item\"> <span class=\"badge\" id=\"holder_lng" + obj1.get("username") + "\"></span> <span class=\"badge\" id=\"holder_lat" + obj1.get("username") + "\"></span> <br>"+
 	    		"</a>"+
 	    		"<a href=\"#\" class=\"list-group-item\"> <span class=\"label label-success\" id=\"holder_distance" + obj1.get("username") + "\"> </span> <span class=\"label label-danger\" id=\"holder_calsBurned" + obj1.get("username") + "\"> </span>"+
 	    		"</a>"+
 	    		"</div>"+"</div>"+
-	    		"</div>")
+	    		"</div>");
+
+			  	getPosition(obj1.get("username"), game);
+
 			  }
 			});
 
 	    	
 	    }
-	    
+
 		
+	    
+	  },
+	  error: function(error) {
+	  	$("#gameFindDiv").show();
+	    alert("Error: " + error.code + " " + error.message);
+	  }
+	});
+
+}
+
+function getPosition(user, game){
+	var GameScore = Parse.Object.extend("MatchInfo");
+	var query = new Parse.Query(GameScore);
+	query.equalTo("gameKey", game);
+	query.equalTo("user", user);
+	query.find({
+	  success: function(results) {
+	    console.log("Successfully retrieved " + results.length + " scores.");
+	    // Do something with the returned Parse.Object value
+	    alert(results[0].get("position"));
+	    var obj = results[0];
+	    $("#holder_position" + obj.get("user")).html(results[0].get("position"));
 	    
 	  },
 	  error: function(error) {
